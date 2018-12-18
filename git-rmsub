@@ -1,0 +1,52 @@
+#!/bin/sh
+
+
+git_subrm() {
+   echo "......... 0. Prepare delete submodule"
+   echo "Проверка наличия аргумента командной строки(пути к сабмодулю)"
+   test -z "$1" && echo "submodule required" 1>&2 && exit 1
+   echo "Проверка наличия файла .gitmodules"
+   test ! -f .gitmodules && echo ".gitmodules file not found" 1>&2 && exit 2
+   NAME="$(echo "$1" | sed 's/\/$//g')"
+   BASENAME=`basename "$NAME"`
+   echo "Путь к модулю ${NAME}"
+   echo "Базовое имя модуля ${BASENAME}"
+   echo "Проверка наличия в .gitmodules секции ${BASENAME}.url"
+   SECTIONNAME="$BASENAME"
+   test -z \
+	"$(git config --file=.gitmodules submodule."$BASENAME".url)" \
+       && SECTIONNAME="$NAME" &&\
+       test -z \
+	    "$(git config --file=.gitmodules submodule."$NAME".url)" \
+       && echo "submodule "$BASENAME" not found" 1>&2 && exit 3
+   
+   echo "......... 1. Delete the relevant section from .git/config and clean submodule files"
+   echo "Удаляем каталог ${NAME}"    
+   if test -e $BASENAME
+   then
+       echo "Деинициализируем сабмодуль ${BASENAME}"    
+       git submodule deinit -f "$BASENAME" || exit 4
+       echo "Удаляем каталог .git/modules/${BASENAME}"    
+       rm -rf .git/modules/"$BASENAME"
+   fi   
+   if test -e $NAME
+   then
+       echo "Деинициализируем сабмодуль ${NAME}"    
+       git submodule deinit -f "$NAME" || exit 4
+       echo "Удаляем каталог .git/modules/${NAME}"    
+       rm -rf .git/modules/"$NAME"
+   fi   
+   rmdir  "$NAME"   
+   echo "......... 2. Delete the relevant line from .gitmodules"
+   echo "Удаляем в  .gitmodules секцию ${SECTIONNAME}"    
+   git config --file=.gitmodules --remove-section submodule."$SECTIONNAME"
+   git add .gitmodules
+   echo "......... 3. Run git rm --cached path_to_submodule"
+   git rm --cached -rf "$NAME"
+   echo "......... 4. Need to confirm and commit the changes for yourself"
+   echo
+   echo "Now submodule $NAME is deleted."
+   echo 'Confirm with `git submodule status` and commit the changes for yourself.'....
+}
+
+git_subrm "$@"

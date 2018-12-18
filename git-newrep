@@ -1,0 +1,11 @@
+#!/bin/sh
+
+touch .gitignore
+#echo "*.[oad]" >  .gitignore
+#echo "build*" > .gitignore
+git init
+git remote add origin git@newiron.incom.tomsk.ru:$1.git
+find -type d -empty -exec   touch '{}'/.empty \;
+git add .
+git commit -m 'first commit'
+git push origin master:refs/heads/master
