@@ -1,0 +1,7 @@
+
+#Перенос существующего репозитория на удаленный сервер: 
+cd existing_repo
+git remote rename origin old-origin
+git remote add origin git@git.test.com:my-repo-b.git
+git push --mirror origin
+

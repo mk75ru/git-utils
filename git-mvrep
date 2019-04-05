@@ -1,0 +1,17 @@
+#Есть некоторый репозиторий с ветками master и develop:
+#git@iron:${MY_REPO_A}.git
+#Есть также пустой репозиторий
+#git@iron:${MY_REPO_B}.git
+#Как полностью перенести репозиторий a в b?
+#Под полностью подразумевается, что должны сохраниться все ветки и все коммиты.
+
+
+MY_REPO_A=$1
+MY_REPO_B=$2
+
+git clone --bare git@iron:${MY_REPO_A}.git
+git fetch origin
+git remote add new-origin git@iron:${MY_REPO_B}.git
+git push --mirror new-origin
+git remote rm origin
+git remote rename new-origin origin
