@@ -9,7 +9,7 @@
 
 
 # Проверка входных параметров
-ARGS=2
+ARGS=3
 E_BADARGS=65
 
 if [ $# -ne "$ARGS" ]
@@ -19,12 +19,14 @@ then
 fi
 
 
-MY_REPO_A=$1
-MY_REPO_B=$2
+REPO_A=$1
+MY_REPO_A=$2
+MY_REPO_B=$3
 
-git clone --bare git@iron:${MY_REPO_A}.git
+git clone --bare  ${REPO_A}${MY_REPO_A}
+cd ${MY_REPO_A} 
 git fetch origin
-git remote add new-origin git@iron:${MY_REPO_B}.git
+git remote add new-origin ${MY_REPO_B}
 git push --mirror new-origin
 git remote rm origin
 git remote rename new-origin origin
