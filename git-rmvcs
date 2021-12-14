@@ -1,0 +1,6 @@
+#!/bin/sh
+FILENAME=$1
+git rm --cached $FILENAME
+#git add $FILENAME
+#git commit -m "убрали из под контроля версий файл $FILENAME"
+#git push

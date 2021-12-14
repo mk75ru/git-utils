@@ -1,0 +1,12 @@
+
+#Перенос существующего репозитория на удаленный сервер:
+REPONAME=$1
+#cd existing_repo
+git remote rename origin old-origin
+git remote add origin https://github.com/mk75ru/${REPONAME}
+git push --mirror origin
+#git remote add origin https://github.com/mk75ru/${REPONAME}.git
+#git push --mirror origin
+git remote remove  old-origin
+
+
